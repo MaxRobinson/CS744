@@ -32,7 +32,142 @@
 
 \section{Problem 3}
 \noindent
-\textit{Question}: For this problem work with the directed web graph shown below. In the graph there are six nodes: S, B, F, G, T, and I (for the websites Snapchat, Bing, Facebook, Google, Twitter, and Instagram). Use a teleport probability of 0.25. Assume no other pages or links exist beside those shown in the figure.
+\textit{Question}: For this problem work with the directed web graph shown below. In the graph there are six nodes: S, B, F, G, T, and I (for the websites Snapchat, Bing, Facebook, Google, Twitter, and Instagram). Use a teleport probability of 0.25. Assume no other pages or links exist beside those shown in the figure. \\
+
+\noindent
+(a) Provide (i.e., write) the six recurrence equations that indicate how to iteratively calculate the
+PageRank score of each page at time t given scores from time t-1.\\
+
+\noindent
+\textit{Answers}: \\
+$PR(S, t_i) = 0.042 + .75*0 = 0.042$\\
+$PR(B, t_i) = 0.042 + .75*(PR(S,t_{i-1})/2 + PR(G,t_{i-1})/2 + PR(F, t_{i-1})/1)$ \\
+$PR(F, t_i) = 0.042 + .75*(PR(T,t_{i-1})/2)$ \\
+$PR(G, t_i) = 0.042 + .75*(PR(S,t_{i-1})/2 + PR(B,t_{i-1})/2)$ \\
+$PR(T, t_i) = 0.042 + .75*(PR(B,t_{i-1})/2 + PR(G,t_{i-1})/2)$ \\
+$PR(I, t_i) = 0.042 + .75*(PR(T,t_{i-1})/2)$ \\
+
+\noindent
+(b) Using the brute-force iterative method of calculation shown in the video lecture calculate two
+iterations of PageRank scores for each page in the graph. Be sure to show scores at times t=0, t=1, and finally
+at t=2. Report scores using three digits of precision (e.g., 0.247, not 0.2 or 0.24696485932). Show work and
+do not merely provide a table of values. \\
+
+
+At $t=0$ let $PR(X) \approx 1/6$ since we have 6 pages. 
+\begin{table}[h!]
+	\begin{tabular}{lllllll}
+		      & S    & B    & F    & G    & T    & I    \\
+		$t=0$ & .167 & .167 & .167 & .167 & .166 & .166  
+	\end{tabular}
+\end{table}
+
+\noindent
+At $t=1$: \\
+$PR(S, 1) = 0.042 + .75*0 = 0.042$\\
+
+\noindent
+$PR(B, 1) = 0.042 + .75*(PR(S,t_{i-1})/2 + PR(G,t_{i-1})/2 + PR(F, t_{i-1})/1)$ \\
+$PR(B, 1) = 0.042 + .75*(.167/2 + .167/2 + .167/1)$ \\
+$PR(B, 1) = 0.042 + .75*(0.334)$ \\
+$PR(B, 1) = 0.293$ \\
+
+\noindent
+$PR(F, 1) = 0.042 + .75*(PR(T,t_{i-1})/2)$ \\
+$PR(F, 1) = 0.042 + .75*(.166/2)$ \\
+$PR(F, 1) = 0.042 + .75*(0.083)$ \\
+$PR(F, 1) = 0.104$ \\
+
+\noindent
+$PR(G, 1) = 0.042 + .75*(PR(S,t_{i-1})/2 + PR(B,t_{i-1})/2)$ \\
+$PR(G, 1) = 0.042 + .75*(0.167/2 + 0.167/2)$ \\
+$PR(G, 1) = 0.042 + .75*(0.167)$ \\
+$PR(G, 1) = 0.167$ \\
+
+\noindent
+$PR(T, 1) = 0.042 + .75*(PR(B,t_{i-1})/2 + PR(G,t_{i-1})/2)$ \\
+$PR(T, 1) = 0.042 + .75*(0.167/2 + 0.167/2)$ \\
+$PR(T, 1) = 0.042 + .75*(0.167)$ \\
+$PR(T, 1) = 0.167$ \\
+
+\noindent
+$PR(I, 1) = 0.042 + .75*(PR(T,t_{i-1})/2)$ \\
+$PR(I, 1) = 0.042 + .75*(.167/2)$ \\
+$PR(I, 1) = 0.042 + .75*(0.0835)$ \\
+$PR(I, 1) = 0.104$ \\
+
+\begin{table}[h!]
+	\begin{tabular}{lllllll}
+		      & S    & B     & F     & G     & T     & I     \\
+		$t=0$ & .167 & .167  & .167  & .167  & .166  & .166  \\
+		$t=1$ & .042 & 0.293 & 0.104 & 0.167 & 0.167 & 0.104    
+	\end{tabular}
+\end{table}
+
+\noindent
+At $t=2$: \\
+$PR(S, 2) = 0.042 + .75*0 = 0.042$\\
+
+\noindent
+$PR(B, 2) = 0.042 + .75*(PR(S,t_{i-1})/2 + PR(G,t_{i-1})/2 + PR(F, t_{i-1})/1)$ \\
+$PR(B, 2) = 0.042 + .75*(0.042/2 + 0.167/2 + 0.104/1)$ \\
+$PR(B, 2) = 0.042 + .75*(0.2085)$ \\
+$PR(B, 2) = 0.198$ \\
+
+\noindent
+$PR(F, 2) = 0.042 + .75*(PR(T,t_{i-1})/2)$ \\
+$PR(F, 2) = 0.042 + .75*(0.167/2)$ \\
+$PR(F, 2) = 0.042 + .75*(0.0835)$ \\
+$PR(F, 2) = 0.105$ \\
+
+\noindent
+$PR(G, 2) = 0.042 + .75*(PR(S,t_{i-1})/2 + PR(B,t_{i-1})/2)$ \\
+$PR(G, 2) = 0.042 + .75*(0.042/2 + 0.293/2)$ \\
+$PR(G, 2) = 0.042 + .75*(0.1675)$ \\
+$PR(G, 2) = 0.168$ \\
+
+\noindent
+$PR(T, 2) = 0.042 + .75*(PR(B,t_{i-1})/2 + PR(G,t_{i-1})/2)$ \\
+$PR(T, 2) = 0.042 + .75*(0.293/2 + 0.167/2)$ \\
+$PR(T, 2) = 0.042 + .75*(0.23)$ \\
+$PR(T, 2) = 0.215$ \\
+
+\noindent
+$PR(I, 2) = 0.042 + .75*(PR(T,t_{i-1})/2)$ \\
+$PR(I, 2) = 0.042 + .75*(0.167/2)$ \\
+$PR(I, 2) = 0.042 + .75*(0.0835)$ \\
+$PR(I, 2) = 0.105$ \\
+
+\begin{table}[h!]
+	\begin{tabular}{lllllll}
+		& S     & B     & F     & G     & T     & I     \\
+		$t=0$ & .167 & .167  & .167  & .167  & .166  & .166  \\
+		$t=1$ & .042 & 0.293 & 0.104 & 0.167 & 0.167 & 0.104  \\
+		$t=2$ & 0.042 &  0.198 &  0.105 & 0.168 & 0.215 & 0.105
+	\end{tabular}
+\end{table}
+
+\noindent
+(c) Which page (or pages) has/have the lowest PageRank score after two iterations? \\
+S(Snapchat) has the lowest PageRank score after two iterations.\\
+
+
+\noindent
+(d) Which page (or pages) has/have the highest PageRank score after two iterations?\\
+T(Twitter) has the highest PageRank score after two iterations. \\
+
+\noindent
+(e) For part e only, suppose that we set the teleport probability in the PageRank equation to zero (0)
+and we let the PageRank algorithm run for many iterators (say 50 iterations). Explain succinctly what the
+important consequence or consequences of this choice would be? Justify your reasoning.
+
 
 
 \end{document}
+
+
+
+
+
+
+
