@@ -18,14 +18,14 @@
 
 \begin{abstract}
 \label{Abstract}
-Ad-hoc retrieval with automatic speech recognition (ASR) transcribed queries presents a new set of challenges. The types of errors in transcribed queries are not the same as queries that were typed. This paper looks at the FIRE 2010 dataset with transcribed queries and investigates which simple indexing schemes provide the most benefit to mitigate the errors that arise from ASR. The results showed that while the performance of ad-hoc retrieval is significantly degraded by poor transcription, using an indexing type of character 4-grams provided the best mitigation for errors introduced by ASR compared to character 3-grams and word indexing. 
+Ad-hoc retrieval with automatic speech recognition (ASR) transcribed queries presents a new set of challenges. The types of errors in transcribed queries are not the same as queries that were typed. This paper looks at the FIRE 2010 dataset with transcribed queries and investigates which simple indexing methods provide the most benefit to mitigate the errors that arise from ASR. The results showed that while the performance of ad-hoc retrieval is significantly degraded by poor transcription, using an indexing method of character 4-grams provided the best mitigation for errors introduced by ASR compared to character 3-grams and word indexing. 
 
 \end{abstract}
 
 
 \section{Introduction}
 \label{Introduction}
-Ad-hoc retrieval is a staple in modern day technology. With the world wide web and services such as Google and Microsoft's Bing, searching for relevant information has common practice. Now as technology has continued to advance, automatic speech recognition is again at the forefront of technology through voice user interfaces for information retrieval. 
+Ad-hoc retrieval is a staple in modern day technology. With the world wide web and services such as Google and Microsoft's Bing, searching for relevant information has common practice. Now as technology has continued to advance, automatic speech recognition (ASR) is again at the forefront of technology through voice user interfaces for information retrieval. 
 
 Much of where ASR is used today is to enable easier search for information. Many smart devices, including smart phones, have some sort of on board or built in ASR that is used for search. Everything from searching the Internet to looking up movies can have integration with ASR for these searches.
 
@@ -33,7 +33,7 @@ The goal of ASR is to have perfect accuracy in transcription of what a user says
 
 Providing accurate document retrieval with errors like spelling mistakes in queries is an active area of research. However, ASR transcribed text presents a new problem with the possibility of a transcribed word being entirely different than the intended word by the speaker. While, more accurate ASR would help fix this problem, it is not clear that all ASR will reach near perfect accuracy soon. 
 
-This paper explores how different indexing types for ad-hoc document retrieval affect the performance retrieval using queries that are transcribed with ASR. To do so, this paper uses the English FIRE 2010 corpra (https://www.isical.ac.in/~clia/2010/) to test character 3-gram, 4-gram, and word based tokenization and indexing. For retrieval and executing queries, the open source search engine Elasticsearch is used. Mozilla's DeepSpeech implementation \cite{mozilla} was used to transcribe audio versions of the FIRE 2010 queries used for testing. 
+This paper explores how different indexing methods for ad-hoc document retrieval affect the performance of retrieval using queries that are transcribed (trans) with ASR. To do so, this paper uses the English FIRE 2010 corpra (https://www.isical.ac.in/~clia/2010/) to test character 3-gram, 4-gram, and word based tokenization and indexing. For retrieval and executing queries, the open source search engine Elasticsearch is used. Mozilla's DeepSpeech implementation \cite{mozilla} was used to transcribe audio versions of the FIRE 2010 queries used for testing. 
 
 
 
@@ -41,25 +41,25 @@ This paper explores how different indexing types for ad-hoc document retrieval a
 \label{Background}
 Automatic speech recognition saw research into the domain with working systems as early as 1952 with a single speaker digit recognition system built by Bell Labs \cite{AsrHistory}. Since then, ASR has come a long ways. Services from companies like Google and Micrsoft are reaching close to 95\% accuracy \cite{Meeker} \cite{MS-human-accuracy}. Human accuracy is considered to be about 95\% \cite{MS-human-accuracy} as well, meaning that ASR is reaching a human level of accuracy very quickly. 
 
-However, not all ASR is this accurate and not all uses of ASR can use tools provided by companies like Google or Microsoft. Alternative non-proprietary based solutions exist for this reason. A stand alone recurrent neural network called Deep Speech was developed by researchers at Baidu in 2014 \cite{Baidu-deep}. The network is an end-to-end audio to text network, that uses a 1-best word prediction. 
+However, not all ASR is this accurate and not all uses of ASR can use tools provided by companies like Google or Microsoft. Alternative non-proprietary based solutions exist for this reason. A stand alone recurrent neural network called Deep Speech was developed by researchers at Baidu in 2014 \cite{Baidu-deep}. The network is an end-to-end network that tasks audio as input and outputs transcribed text. This was a break through in ASR by developing a single network that can do audio to text all by itself. 
 
 The researchers claimed a 16\% error rate on a widely studied dataset, Switchboard Hub5'00. An open source implementation of Deep Speech by Mozilla \cite{mozilla} was later created with publicly available language models. This enables ASR without the need to use commercial services. 
 
 %% Section on query error correction 
-Errors in queries for information retrieval systems have also been studied. In a typical query system, errors in the query are typically caused by a human mistyping a word resulting in a spelling mistake. Spelling mistakes have been studied for sometime and there are existing solutions such as edit distance, context sensitive spelling corrections, or phonetic corrections shown in books like Manning's ``Introduction to Information Retrieval" \cite{IntroductionIR}. 
+Errors in queries for information retrieval systems have also been studied. In a typical query system, errors in the query are typically caused by a human mistyping a word which results in a spelling mistake. Spelling mistakes have been studied for sometime and there are existing solutions such as edit distance, context sensitive spelling corrections, or phonetic corrections shown in books like Manning's ``Introduction to Information Retrieval" \cite{IntroductionIR}. 
 
 Other techniques such as relevance feedback and query expansion have also been used to combat non-specific queries and enhance retrieval performance. Query expansion attempts to add relevant words to a query in the hopes that the expanded query provides better results. Relevance feedback aims to adjust a query based on the top documents initially retrieved to improve results. Relevance feedback can also be used as a corrective measure to suggest to a user a more likely query if a mistake was made. 
 
 
 \section{Experiment}
 \label{Experiment}
-To test the effect of different indexing methods on retrieval performance for ASR transcribed queries the Forum for Information Retrieval Evaluation (FIRE) 2010 (https://www.isical.ac.\\in/\textasciitilde{}clia/2010/) English dataset was selected. The FIRE 2010 dataset is a collection of documents focused on news articles in the South Asia region. The documents are available in a few different languages, but for the purpose of this experiment the English version of these documents will be used. 
+To test the affect of different indexing methods on retrieval performance for ASR transcribed queries the Forum for Information Retrieval Evaluation (FIRE) 2010 (https://www.isical.ac.\\in/\textasciitilde{}clia/2010/) English dataset was selected. The FIRE 2010 dataset is a collection of documents focused on news articles in the South Asia region. The documents are available in a few different languages, but for the purpose of this experiment the English version of these documents will be used. 
 
-FIRE 2010 follows the TREC standard convention for document, topic, and qrels encodings. This allows the application of the standard TREC\_EVAL calculations and metrics to be used. The primary metric used in this experiment is the mean average precision (MAP) for each set of queries. The full TREC\_EVAL output is available in Appendix C for reference. 
+FIRE 2010 follows the TREC standard convention for document, topic, and qrels encodings. This allows the application of the standard TREC\_EVAL calculations and metrics to be used. The primary metric used in this experiment is the mean average precision (MAP) across the set of queries. The full TREC\_EVAL output for the experiment is available in Appendix C for reference. 
 
 In order to test ASR transcription, the queries for FIRE 2010 had to be transformed into audio and then the audio must have ASR applied to it to obtain a transcribed query. To transform the queries, the queries were spoken out loud and recorded with an inexpensive headset microphone. The audio was recorded at 16KHz with 1 channel and a chunk size of 1024. 
 
-Each recording was 20 seconds in length, even if speaking the query did not take 20 seconds. Queries were spoken with roughly the same cadence and speed to as much of a degree as possible by the speaker. The speaker was a native English speaker and words were spoken close to dictionary pronunciations typically (i.e. little to know accent). The speaker was not familiar with many of the named entities in the query text so pronunciations of non-English words were done to the best of the speakers ability, following English phonetic rules. 
+Each recording was 20 seconds in length, even if speaking the query did not take 20 seconds. Queries were spoken with roughly the same cadence and speed to as much of a degree as possible by the speaker. The speaker was a native English speaker and words were spoken close to dictionary pronunciations typically (i.e. with little to no accent). The speaker was not familiar with many of the named entities in the query text so pronunciations of non-English words were done to the best of the speakers ability, following English phonetic rules. 
 
 Mozilla's DeepSpeech implementation was chosen to transcribe the audio queries back to text. Mozilla's DeepSpeech was chosen because of its free availability and its popularity in the open source community. In addition, DeepSpeech is free and able to be run on a single computer with middling specifications. The model used for DeepSpeech is the freely available v0.3.0 model retrievable via the Mozilla DeepSpeech repository.
 
@@ -69,9 +69,9 @@ Three indexes were created and used for the experiment. One index specified char
 
 The documents for FIRE 2010 were indexed into Elasticsearch using a companion tool Logstash (www.elastic.co/products/logstash), after first being translated into tsv files. Logstash was used primarily to quickly index data into Elasticsearch. For each document, the entirety of the document was indexed, and the document ID was also stored with the document. 
 
-Queries were made to Elasticsearch using both the transcribed queries and the original queries for comparison. The query used was a standard Elasticsearch ``match" query. Elasticsearch preprocessed the query the same way as if indexing a document according to that index, and then executes a boolean ``or" query. The format of the query can be seen in Appendix B. Only the document ID was retrieved for each query and the score for each document was captured. 
+Queries were made to Elasticsearch using both the transcribed queries and the original queries for comparison. The Elasticsearch query used was a standard Elasticsearch ``match" query. Elasticsearch preprocessed the query the same way it would index a document for the index being queried. It then executes a boolean ``or" query. The format of the query can be seen in Appendix B. Only the document ID was retrieved for each query and the score for each document was captured. 
 
-In an attempt to retrieve as many relevant documents as possible for each query, the top 1000 documents were retrieved for each query. There were 50 queries total and the top 1000 documents were retrieved for each of those, resulting in a total of 50,000 documents retrieved. 
+In an attempt to retrieve as many relevant documents as possible for each query, the top 1000 documents were retrieved for each query. There were 50 queries total and the top 1000 documents were retrieved for each of those, resulting in a total of 50,000 documents retrieved across all queries. 
 
 The results of each query were output in the standard TREC evaluation format for a trec\_top\_file. TREC\_EVAL was run on the results from executing all 50 transcribed queries against all indexes and executing all 50 original queries against all indexes. 
 
@@ -185,9 +185,9 @@ Investigating the translated queries leads to a hypothesis for the poor ASR perf
 
 Figure \ref{query_Transcribe_fail} shows two example ground truth queries from FIRE 2010 and the counter part transcription from DeepSpeech. In Q77, ``Hezbollah" can be seen to cause a failure in transcription just for that word, and thus loosing the named entity in the sentence. Q121, the word ``Samjhauta" appears to cause a failure in transcription but not only for the single word. In this case, many following words seem to be effected by this mistake in transcription. 
 
-In addition to non-English words in the queries, the speaker who was recorded was also unfamiliar with the pronunciation of many of these non-English words. The resulting audio for these words could also be poor as a result as the pronunciation could be incorrect which could lead to possibly worse results. The audio quality for query transcription could also have played a factor as additional noise from the mic or background could have played a role. The audio recording setup was not dislike many setups for a consumer, so the audio quality should be at least partially representative of a real world circumstance.  
+In addition to non-English words in the queries, the speaker who was recorded was also unfamiliar with the pronunciation of many of these non-English words. The resulting audio for these words could be poor as the pronunciation could be incorrect which could lead to possibly worse results. The audio quality for query transcription could also have played a factor as additional noise from the mic or background could have played a role. The audio recording setup was not dislike many setups for a consumer, so the audio quality should be at least partially representative of a real world circumstance.  
 
-The effect ASR error had on query results was substantial. Figure \ref{fig:MAP_all} shows the MAP for queries using transcribed queries versus the ground truth queries across all indexing types; 3-grams, 4-grams, and words. It can be seen that transcribed queries did significantly worse than their ground truth counter parts in all indexing schemes.
+The effect ASR error had on query results was substantial. Figure \ref{fig:MAP_all} shows the MAP for queries using transcribed queries versus the ground truth queries across all indexing methods; 3-grams, 4-grams, and words. It can be seen that transcribed queries did significantly worse than their ground truth counter parts for all indexing methods.
 
 
 \begin{figure}[h!]
@@ -214,7 +214,7 @@ words    & 0.1302 & 0.3789 & 34.36262866 \\ \hline
 
 Overall, 4-gram indexing had the best MAP both for the ground truth queries and for transcribed queries. This provides additional evidence to previous works that showed that 4-grams are particularly effective, especially for European languages \cite{McNamee2004}. In addition, previous work showed that 4-grams are the most effective for the Hindi FIRE 2010 dataset \cite{Vishwakarma}. This seems to be the case for the English FIRE 2010 dataset. 
 
-While the performance of 4-grams has been shown before, the interesting part for this experiment is how 4-grams were able to reduce the impact that ASR error had on query performance. Table \ref{MAP_mitigation} shows the percentage of performance the transcribed query had compared to its ground truth counter. The transcribed queries using 3-grams performed only 34\% as well when compared to ground truth queries using 3-grams. So transcription decreased MAP by about two-thirds for 3-grams. The same is true for words, about a two-thirds reduction in performance. 
+While the performance of 4-grams has been shown before, the interesting part for this experiment is how 4-grams were able to reduce the impact that ASR error had on query performance. Table \ref{MAP_mitigation} shows the percentage of performance the transcribed query had compared to its ground truth counter. The transcribed queries using 3-grams performed only 34\% as well when compared to ground truth queries using 3-grams. So transcription decreased MAP by about 66\% for 3-grams. The same is true for words, about a 66\% reduction in performance. 
 
 For 4-grams, only had about a 55\% reduction in performance compared to its ground truth counter parts. This shows that 4-grams were more effective at reducing the effect of ASR error on retrieval than 3-grams and words. 
 
@@ -227,18 +227,24 @@ For 4-grams, only had about a 55\% reduction in performance compared to its grou
 
 The performance of 4-grams can also be seen when comparing precision with different numbers of documents retrieved. Figure \ref{fig:Precisions} shows precision for the number of documents retrieved. 4-grams can be seen to have much higher precision compared to 3-grams and words especially when fewer documents are retrieved. This indicates that 4-grams would also perform better if only looking at the top 30 or so documents. 
 
+It is slightly surprising that character 3-grams and word indexing had such similar performance. The motivation behind 3-grams was to index possible like character sequences that might exist if whole word were incorrectly substituted in the transcribed query. However, it appears that 3-grams were not able to pick up enough extra information to perform much better than word indexing. This is most likely because the words substituted were not as similar in short character sequences as originally thought. Like in Figure \ref{query_Transcribe_fail}, ``Hezbollah" is transcribed to ``hasbelocarillos" where the character 3-gram ``has" instead of ``hez" which might hurt retrieval more than help in this case. 
+
+For this particular dataset and transcriptions, the hypothesis is that the character 4-gram indexing was able to capture larger overlapping segments of partially correct words in the ASR transcription. In Figure \ref{query_Transcribe_fail}, Q77 a 4-gram that would have been captured includes ``by h". This 4-gram contains an important piece of information about the following named entity ``Hezbollah". The named entity in the transcribed query is incorrect but this 4-gram exists in both queries and might be enough to narrow the search. The 4-gram ``rill" later in the sentence that should belong to ``guerrillas" is also in both queries, and is likely to belong to fewer words than other sequences. 
+
+These character 4-grams, while still capturing errors, appear to be able to capture enough identifying characteristics in the queries to be more effective. These parts of named entities that might be captured, could be one of the reasons that 4-grams performed better than the other indexing methods. 
+
 
 \section{Future Work}
 \label{Future}
-While this paper explored some aspects of ASR integration with ad-hoc retrieval there is much more work that could be done. The DeepSpeech off the shelf model for ASR seems to need a different dataset for queries if the effects of ASR with document retrieval are to be inspected with a lower average word error rate. The high word error rate provided good contrast for this paper, more realistic performance might be achieved by using a dataset consisting of common English words to transcribe. 
+While this paper explored some aspects of ASR integration with ad-hoc retrieval there is much more work that could be done. The DeepSpeech off the shelf model for ASR seems to need a different dataset for queries if the effects of ASR with document retrieval are to be inspected with a lower average word error rate. The high word error rate provided good contrast for this paper, but more realistic performance might be achieved by using a dataset consisting of common English words to transcribe. 
 
 More work can also be done to analyze where ASR makes mistakes and how other forms of tokenization and indexing can possibly reconcile these errors. Stemming for transcriptions would be an area of future work to possibly avoid plural or past tense errors. Soundex type indexing might be tried in order to capture the sounds of transcribed words that might account for errors. 
 
 \section{Conclusion}
 \label{Conclusion}
-In this paper, the overlap between automatic speech recognition and ad-hoc retrieval was explored. The interesting problem of errors through transcriptions motivated a look what basic tokenizing and indexing techniques could be applied to mitigate these errors. While the ASR used for the experiments had high word error rates for transcribed queries, it magnified the differences between the different indexing approaches. 
+In this paper, the overlap between automatic speech recognition and ad-hoc retrieval was explored. The interesting problem of errors through transcriptions motivated a look at what basic tokenizing and indexing techniques could be applied to mitigate these errors. While the ASR used for the experiments had high word error rates for transcribed queries, it magnified the differences between the different indexing approaches. 
 
-The results of the experiment showed that character 4-grams where the best indexing choice to mitigate error introduced by transcribing queries using the Mozilla DeepSpeech implementation. Not only did 4-grams perform mitigate error best overall, it also provided the best performance for looking at only the top documents returned. 
+The results of the experiment showed that character 4-grams where the best indexing choice to mitigate error introduced by transcribing queries using Mozilla's DeepSpeech implementation. Not only did 4-grams mitigate error best overall, it also provided the best performance when looking at only the top few documents returned. 
 
 While more work can be done to explore additional techniques to mitigate error from ASR, this work reaffirms that character 4-grams perform well in document retrieval and are good starting place for ASR transcription error mitigation for document retrieval. 
 
